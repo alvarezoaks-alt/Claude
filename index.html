@@ -54,6 +54,7 @@
             align-items: center;
             padding: 20px;
             text-align: center;
+            overflow-y: auto;
         }
 
         #menuScreen {
@@ -65,6 +66,12 @@
             color: #ff6b9d;
             margin-bottom: 20px;
             text-shadow: 3px 3px 0 #fff, 6px 6px 0 #ffc7e5;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #ff6b9d;
+            margin: 15px 0;
         }
 
         .emoji {
@@ -186,6 +193,11 @@
             padding: 15px 30px;
         }
 
+        button.small {
+            font-size: 1em;
+            padding: 12px 25px;
+        }
+
         #scoreDisplay {
             font-size: 3em;
             color: #ff6b9d;
@@ -198,6 +210,118 @@
             font-size: 1.5em;
             color: #666;
             margin-bottom: 10px;
+        }
+
+        .name-input-container {
+            background: white;
+            border: 4px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 350px;
+        }
+
+        .name-input-container input {
+            font-family: inherit;
+            font-size: 1.3em;
+            padding: 15px;
+            border: 3px solid #ffc7e5;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 250px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .name-input-container input:focus {
+            outline: none;
+            border-color: #ff6b9d;
+        }
+
+        .ranking-table {
+            background: white;
+            border: 4px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 400px;
+            width: 100%;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .ranking-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .ranking-tabs button {
+            font-size: 1em;
+            padding: 10px 20px;
+        }
+
+        .ranking-tabs button.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        }
+
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 2px solid #ffc7e5;
+        }
+
+        .ranking-item.top1 {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-color: #FF8C00;
+        }
+
+        .ranking-item.top2 {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%);
+            border-color: #808080;
+        }
+
+        .ranking-item.top3 {
+            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+            border-color: #8B4513;
+        }
+
+        .ranking-position {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6b9d;
+            min-width: 40px;
+        }
+
+        .ranking-name {
+            flex: 1;
+            font-size: 1.2em;
+            color: #333;
+            text-align: left;
+            margin: 0 10px;
+        }
+
+        .ranking-score {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .empty-ranking {
+            color: #999;
+            font-size: 1.2em;
+            padding: 30px;
         }
 
         @media (max-width: 480px) {
@@ -217,6 +341,18 @@
 
             .game-card h2 {
                 font-size: 1.5em;
+            }
+
+            .ranking-item {
+                padding: 10px;
+            }
+
+            .ranking-name {
+                font-size: 1em;
+            }
+
+            .ranking-score {
+                font-size: 1.1em;
             }
         }
     </style>
@@ -241,6 +377,8 @@
                     <p>¡Salta obstáculos y corre sin parar! Toca para saltar.</p>
                 </div>
             </div>
+
+            <button class="secondary small" id="showRankingButton">🏆 Ver Ranking</button>
         </div>
 
         <!-- Pantalla de Inicio del Juego -->
@@ -258,8 +396,34 @@
             <div class="emoji">🐹</div>
             <div id="scoreDisplay">0</div>
             <p style="font-size: 1.3em; color: #666; margin: 10px 0;">puntos</p>
+
+            <div class="name-input-container">
+                <p style="color: #666; font-size: 1.2em; margin-bottom: 10px;">✏️ ¿Cómo te llamas?</p>
+                <input type="text" id="playerNameInput" placeholder="Tu nombre" maxlength="15">
+                <button id="saveScoreButton" style="margin-top: 10px;">💾 Guardar Puntuación</button>
+            </div>
+
             <button id="restartButton">Jugar Otra Vez</button>
             <button class="secondary" id="backToMenuFromGameOver">Volver al Menú</button>
+        </div>
+
+        <!-- Pantalla de Ranking -->
+        <div id="rankingScreen" class="screen">
+            <h1>🏆 Ranking de Puntuaciones</h1>
+
+            <div class="ranking-tabs">
+                <button id="rankingComilona" class="active">🥕 Comilona</button>
+                <button id="rankingAtleta">🏃 Atleta</button>
+            </div>
+
+            <div class="ranking-table">
+                <ul class="ranking-list" id="rankingList">
+                    <!-- Las puntuaciones se insertarán aquí dinámicamente -->
+                </ul>
+            </div>
+
+            <button class="secondary" id="backToMenuFromRanking">Volver al Menú</button>
+            <button class="secondary small" id="clearRankingButton">🗑️ Borrar Ranking</button>
         </div>
     </div>
 
@@ -269,17 +433,26 @@
         const menuScreen = document.getElementById('menuScreen');
         const startScreen = document.getElementById('startScreen');
         const gameOverScreen = document.getElementById('gameOverScreen');
+        const rankingScreen = document.getElementById('rankingScreen');
         const scoreDisplay = document.getElementById('scoreDisplay');
         const gameTitle = document.getElementById('gameTitle');
         const instructionsContainer = document.getElementById('instructionsContainer');
+        const playerNameInput = document.getElementById('playerNameInput');
+        const rankingList = document.getElementById('rankingList');
 
         // Botones
         const selectComilona = document.getElementById('selectComilona');
         const selectAtleta = document.getElementById('selectAtleta');
         const startButton = document.getElementById('startButton');
         const restartButton = document.getElementById('restartButton');
+        const saveScoreButton = document.getElementById('saveScoreButton');
+        const showRankingButton = document.getElementById('showRankingButton');
         const backToMenuFromStart = document.getElementById('backToMenuFromStart');
         const backToMenuFromGameOver = document.getElementById('backToMenuFromGameOver');
+        const backToMenuFromRanking = document.getElementById('backToMenuFromRanking');
+        const rankingComilona = document.getElementById('rankingComilona');
+        const rankingAtleta = document.getElementById('rankingAtleta');
+        const clearRankingButton = document.getElementById('clearRankingButton');
 
         // Ajustar tamaño del canvas
         function resizeCanvas() {
@@ -292,11 +465,13 @@
 
         // Estado general
         let currentGame = null; // 'comilona' o 'atleta'
-        let gameState = 'menu'; // 'menu', 'start', 'playing', 'gameover'
+        let gameState = 'menu'; // 'menu', 'start', 'playing', 'gameover', 'ranking'
         let score = 0;
         let lives = 3;
         let gameSpeed = 1;
         let lastSpeedIncrease = 0;
+        let currentRankingView = 'comilona';
+        let scoreSaved = false;
 
         // Variables para Cobaya Comilona
         let fallingFoods = [];
@@ -329,6 +504,74 @@
             groundY: 0
         };
 
+        // ===== SISTEMA DE RANKING =====
+        function saveScore(name, score, game) {
+            const scores = getScores();
+
+            scores.push({
+                name: name,
+                score: score,
+                game: game,
+                date: new Date().toISOString()
+            });
+
+            // Ordenar por puntuación descendente
+            scores.sort((a, b) => b.score - a.score);
+
+            // Guardar en localStorage
+            localStorage.setItem('guineaPigScores', JSON.stringify(scores));
+        }
+
+        function getScores() {
+            const stored = localStorage.getItem('guineaPigScores');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function getTopScores(game, limit = 10) {
+            const allScores = getScores();
+            return allScores
+                .filter(s => s.game === game)
+                .slice(0, limit);
+        }
+
+        function clearScores() {
+            if (confirm('¿Seguro que quieres borrar todas las puntuaciones?')) {
+                localStorage.removeItem('guineaPigScores');
+                displayRanking(currentRankingView);
+            }
+        }
+
+        function displayRanking(game) {
+            currentRankingView = game;
+            const scores = getTopScores(game);
+
+            rankingList.innerHTML = '';
+
+            if (scores.length === 0) {
+                rankingList.innerHTML = '<li class="empty-ranking">¡Aún no hay puntuaciones! 🎮<br>¡Sé el primero en jugar!</li>';
+                return;
+            }
+
+            scores.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.className = 'ranking-item';
+
+                if (index === 0) li.classList.add('top1');
+                else if (index === 1) li.classList.add('top2');
+                else if (index === 2) li.classList.add('top3');
+
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+
+                li.innerHTML = `
+                    <span class="ranking-position">${medal} ${index + 1}</span>
+                    <span class="ranking-name">${entry.name}</span>
+                    <span class="ranking-score">${entry.score}</span>
+                `;
+
+                rankingList.appendChild(li);
+            });
+        }
+
         // Event Listeners para selección de juego
         selectComilona.addEventListener('click', () => {
             currentGame = 'comilona';
@@ -345,6 +588,40 @@
         restartButton.addEventListener('click', startGame);
         backToMenuFromStart.addEventListener('click', showMenu);
         backToMenuFromGameOver.addEventListener('click', showMenu);
+        backToMenuFromRanking.addEventListener('click', showMenu);
+        showRankingButton.addEventListener('click', showRanking);
+        clearRankingButton.addEventListener('click', clearScores);
+
+        saveScoreButton.addEventListener('click', () => {
+            const name = playerNameInput.value.trim();
+            if (name === '') {
+                alert('¡Por favor escribe tu nombre!');
+                return;
+            }
+
+            saveScore(name, score, currentGame);
+            scoreSaved = true;
+            saveScoreButton.textContent = '✅ ¡Guardado!';
+            saveScoreButton.disabled = true;
+
+            // Mostrar ranking después de guardar
+            setTimeout(() => {
+                currentRankingView = currentGame;
+                showRanking();
+            }, 1000);
+        });
+
+        rankingComilona.addEventListener('click', () => {
+            rankingComilona.classList.add('active');
+            rankingAtleta.classList.remove('active');
+            displayRanking('comilona');
+        });
+
+        rankingAtleta.addEventListener('click', () => {
+            rankingAtleta.classList.add('active');
+            rankingComilona.classList.remove('active');
+            displayRanking('atleta');
+        });
 
         // Control táctil y mouse
         canvas.addEventListener('mousedown', handleInput);
@@ -409,6 +686,7 @@
             menuScreen.style.display = 'flex';
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
+            rankingScreen.style.display = 'none';
         }
 
         function showStartScreen() {
@@ -416,6 +694,7 @@
             menuScreen.style.display = 'none';
             startScreen.style.display = 'flex';
             gameOverScreen.style.display = 'none';
+            rankingScreen.style.display = 'none';
 
             if (currentGame === 'comilona') {
                 gameTitle.textContent = '🥕 Cobaya Comilona';
@@ -455,6 +734,25 @@
             }
         }
 
+        function showRanking() {
+            gameState = 'ranking';
+            menuScreen.style.display = 'none';
+            startScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            rankingScreen.style.display = 'flex';
+
+            // Actualizar los botones de tabs
+            if (currentRankingView === 'comilona') {
+                rankingComilona.classList.add('active');
+                rankingAtleta.classList.remove('active');
+            } else {
+                rankingAtleta.classList.add('active');
+                rankingComilona.classList.remove('active');
+            }
+
+            displayRanking(currentRankingView);
+        }
+
         function startGame() {
             gameState = 'playing';
             score = 0;
@@ -462,6 +760,7 @@
             gameSpeed = 1;
             lastSpeedIncrease = 0;
             distanceTraveled = 0;
+            scoreSaved = false;
 
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
@@ -497,6 +796,9 @@
         function endGame() {
             gameState = 'gameover';
             scoreDisplay.textContent = score;
+            playerNameInput.value = '';
+            saveScoreButton.textContent = '💾 Guardar Puntuación';
+            saveScoreButton.disabled = false;
             gameOverScreen.style.display = 'flex';
         }
 
