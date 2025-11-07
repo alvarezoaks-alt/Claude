@@ -715,6 +715,7 @@
                             </div>
                         </div>
                         <p style="margin-top: 15px;">💚 Tienes 3 vidas</p>
+                        <p>⚠️ ¡No dejes caer la comida buena!</p>
                         <p>⚡ ¡La velocidad aumenta!</p>
                     </div>
                 `;
@@ -832,6 +833,14 @@
 
                 // Eliminar si sale de pantalla
                 if (food.y > canvas.height) {
+                    // Si es comida buena y se escapa, perder una vida
+                    if (food.isGood) {
+                        lives--;
+                        if (lives <= 0) {
+                            endGame();
+                            return;
+                        }
+                    }
                     fallingFoods.splice(i, 1);
                 }
             }
